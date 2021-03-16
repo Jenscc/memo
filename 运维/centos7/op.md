@@ -1,4 +1,10 @@
- 
+##  release
+
+```
+cat /etc/centos-release
+```
+
+
 
 ## port
 
@@ -13,7 +19,7 @@
 | 检查端口被哪个进程占用                     | netstat -lnpt \|grep 5672                                    |
 | 中止进程                                   | kill -9 6832                                                 |
 
-
+firewall-cmd --zone=public --add-port=9001/tcp --permanent
 
 ## sudo
 

@@ -1,12 +1,12 @@
-#  ARCH安装避坑(ARCH入坑指南)
+# ARCH 安装避坑(ARCH 入坑指南)
 
 ## BIOS
 
-确保是UEFI,并关闭secure boot
+确保是 UEFI,并关闭 secure boot
 
 ## 联网
 
-大概是在20年6月，wifi-menu被移除了，所以只能用wpa_supplicant
+大概是在 20 年 6 月，wifi-menu 被移除了，所以只能用 wpa_supplicant
 
 ```shell
 ip link #查看无线设备名称，通常为wlan0
@@ -15,7 +15,7 @@ iwlist wlan0 scan| grep ESSID #扫描
 wpa_passphrase wifi名称 wifi密码 > internet.conf
 wpa_supplicant -c internet.conf -i wlan0 & #-c 指定配置文件 -i 指定设备
 # 等待+回车
-dhcpcd & 
+dhcpcd &
 # 等待+回车
 ping baidu.com #如果前面没有error,应该能ping通
 ```
@@ -39,7 +39,7 @@ fdisk -l # 查看磁盘设备
 fdisk /dev/nvme0n1 # 对你的磁盘进行分区，下面默认分引导，主硬盘，交换三个分区
 ```
 
-详细描述见**[安装指南](https://wiki.archlinux.org/index.php/Installation_guide_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87))**和**[fdisk官方文档](https://link.zhihu.com/?target=https%3A//wiki.archlinux.org/index.php/Fdisk)**
+详细描述见**[安装指南](<https://wiki.archlinux.org/index.php/Installation_guide_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)>)**和**[fdisk 官方文档](https://link.zhihu.com/?target=https%3A//wiki.archlinux.org/index.php/Fdisk)**
 
 ## 格式化分区
 
@@ -64,7 +64,7 @@ mount /dev/nvme0n1p1 /mnt/boot # 挂载引导分区
 pacstrap /mnt base linux-zen linux-firmware
 ```
 
-在live环境中使用`reflector`进行镜像的管理，貌似你一连接网络，live系统会自动执行reflector命令来帮你选择镜像源，默认的是根据下载速率进行排序，所以我们应该可以跳过修改镜像源，如果有问题，那么
+在 live 环境中使用`reflector`进行镜像的管理，貌似你一连接网络，live 系统会自动执行 reflector 命令来帮你选择镜像源，默认的是根据下载速率进行排序，所以我们应该可以跳过修改镜像源，如果有问题，那么
 
 ```shell
 vim /etc/pacman.d/mirrorlist # 镜像源
@@ -80,9 +80,9 @@ nameserver 114.114.114.114
 
 ## 配置系统
 
-### **生成fstab文件**
+### **生成 fstab 文件**
 
-用以下命令生成`fstab`文件，其中`-U`选项用来设置UUID：
+用以下命令生成`fstab`文件，其中`-U`选项用来设置 UUID：
 
 ```text
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -98,7 +98,7 @@ arch-chroot /mnt
 
 ### **安装文本编辑器**
 
-现在的新系统连默认的文本编辑器`nano`都没有了，所以需要自己手动安装一个，不然后面的一些配置无法实现，所以我选择最强的`vim`：(建议直接上neovim)
+现在的新系统连默认的文本编辑器`nano`都没有了，所以需要自己手动安装一个，不然后面的一些配置无法实现，所以我选择最强的`vim`：(建议直接上 neovim)
 
 ```shell
 pacman -S neovim
@@ -125,14 +125,14 @@ hwclock --systohc
 > 本地化的程序与库若要本地化文本，都依赖**[Locale](https://link.zhihu.com/?target=https%3A//wiki.archlinux.org/index.php/Locale)**，后者明确规定地域、货币、时区日期的格式、字符排列方式和其他本地化标准等等。在下面两个文件设置：`locale.gen`与`locale.conf`。
 
 1. 首先编辑`/etc/locale.gen`文件，然后将需要的地区的注释移除，建议将`en_US UTF-8`和`zh_CN UTF-8`都取消注释。
-2. 执行`locale-gen`命令生成locale。
-3. 创建`/etc/locale.conf`文件并编辑`LANG`这一变量（将系统locale 设置为`en_US.UTF-8`，系统的`Log`就会用英文显示，这样更容易问题的判断和处理。）：
+2. 执行`locale-gen`命令生成 locale。
+3. 创建`/etc/locale.conf`文件并编辑`LANG`这一变量（将系统 locale 设置为`en_US.UTF-8`，系统的`Log`就会用英文显示，这样更容易问题的判断和处理。）：
 
 ```text
 LANG=en_US.UTF-8
 ```
 
-*这里最好不要设置为中文locale，会导致TTY乱码*
+_这里最好不要设置为中文 locale，会导致 TTY 乱码_
 
 ### **网络设置**
 
@@ -145,9 +145,9 @@ LANG=en_US.UTF-8
 127.0.1.1 myhostname.localdomain myhostname
 ```
 
-### **设置root密码**
+### **设置 root 密码**
 
-使用`passwd`命令设置root密码即可。
+使用`passwd`命令设置 root 密码即可。
 
 ### **安装及配置引导程序**
 
@@ -159,7 +159,7 @@ LANG=en_US.UTF-8
 pacman -S grub efibootmgr intel-ucode os-prober # AMD请装amd-ucode
 ```
 
-这里详细介绍一下UEFI系统如何安装配置GRUB：
+这里详细介绍一下 UEFI 系统如何安装配置 GRUB：
 
 1. 首先使用以下命令安装到系统：
 
@@ -169,7 +169,7 @@ grub-mkconfig > /boot/grub/grub.cfg
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=ArchLinux
 ```
 
-### **安装wifi网络管理工具**
+### **安装 wifi 网络管理工具**
 
 为你的系统安装网络工具
 
@@ -208,9 +208,9 @@ passwd your_username
 
 使用`visudo`命令，修改用户组权限，找到`%wheel`取消其注释
 
-`exit`退出root,登陆你的个人用户
+`exit`退出 root,登陆你的个人用户
 
-### 添加archlinuxcn源
+### 添加 archlinuxcn 源
 
 编辑文件/etc/pacman.conf
 
@@ -227,7 +227,7 @@ Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
 Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 ```
 
-### 添加PGP密钥
+### 添加 PGP 密钥
 
 ```shell
 sudo pacman -S archlinuxcn-keyring
@@ -241,11 +241,11 @@ sudo pacman -Syyu
 
 ## 图形化界面
 
-安装kde
+安装 kde
 
 ### **安装显示服务器**
 
-使用下面的命令安装开源的xorg
+使用下面的命令安装开源的 xorg
 
 ```shell
 sudo pacman -S xorg xorg-server
@@ -255,13 +255,13 @@ sudo pacman -S xorg xorg-server
 
 根据自己的显卡配置来选择安装即可。
 
-对于intel显卡，我安装的是官方的`xf86-video-intel`驱动：
+对于 intel 显卡，我安装的是官方的`xf86-video-intel`驱动：
 
 ```shell
 sudo pacman -S xf86-video-intel
 ```
 
-对于NVIDIA显卡，安装开源驱动`nouveau`：
+对于 NVIDIA 显卡，安装开源驱动`nouveau`：
 
 ```shell
 sudo pacman -S mesa xf86-video-nouveau
@@ -269,7 +269,7 @@ sudo pacman -S mesa xf86-video-nouveau
 
 ### 安装登录管理器
 
-推荐使用SDDM
+推荐使用 SDDM
 
 ```shell
 sudo pacman -S sddm sddm-kcm
@@ -303,7 +303,7 @@ systemctl enable bluetooth
 systemctl start bluetooth
 ```
 
-### 安装Aur助手
+### 安装 Aur 助手
 
 ```shell
 sudo pacman -S yay
@@ -318,4 +318,4 @@ yay --aururl "https://aur.tuna.tsinghua.edu.cn" --save
 reboot
 ```
 
-之后尽情配置美化你的arch吧
+之后尽情配置美化你的 arch 吧
